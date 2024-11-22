@@ -244,6 +244,32 @@
                 font-size: 0.9em;
             }
         }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 0.9em;
+            z-index: 1000;
+        }
+
+        /* Add margin to container to prevent footer overlap */
+        .container {
+            margin-bottom: 70px;
+        }
+
+        @media (max-width: 600px) {
+            .footer {
+                padding: 15px;
+                font-size: 0.8em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -274,6 +300,13 @@
             </button>
         </div>
     </div>
+
+    <button class="home-button" onclick="restartQuiz()">Home</button>
+
+    <!-- Add the footer directly in HTML -->
+    <footer class="footer">
+        &copy; <script>document.write(new Date().getFullYear())</script> Prashant Rewar. All rights reserved.
+    </footer>
 
     <script>
         const part1pageQuestions = [
@@ -1780,6 +1813,21 @@ const part5pageQuestions = [
         homeButton.textContent = 'Home';
         homeButton.onclick = restartQuiz;
         document.body.appendChild(homeButton);
+
+        // Add the footer styles to the document
+        document.head.appendChild(
+            Object.assign(document.createElement('style'), {
+                textContent: footerStyles
+            })
+        );
+
+        // Create and add the footer
+        const footer = document.createElement('footer');
+        footer.className = 'footer';
+        footer.innerHTML = `
+            &copy; ${new Date().getFullYear()} Prashant Rewar. All rights reserved.
+        `;
+        document.body.appendChild(footer);
     </script>
 </body>
 </html> 
