@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MCQ Test</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .option {
+            margin: 12px 0;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .navigation {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        #prevBtn {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        #nextBtn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #summary {
+            margin-top: 30px;
+        }
+
+        #summary p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        #wrongAnswers {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        #wrongAnswers h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        #wrongQuestionsList > div {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        #wrongQuestionsList p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        #wrongQuestionsList strong {
+            color: #2c3e50;
+        }
+
+        .wrong-answer {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .correct-answer {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .score-highlight {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .option {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+
+            button {
+                padding: 10px 20px;
+            }
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: var(--progress, 0%);
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            text-align: right;
+            margin-top: 5px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .test-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .test-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        #quiz, #summary {
+            display: none;
+        }
+
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .home-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .home-button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="question-counter" id="questionCounter"></div>
+        </div>
+        <div id="quiz">
+            <h2><span id="questionNumber"></span> <span id="question"></span></h2>
+            <div id="options"></div>
+            <div class="navigation">
+                <button id="prevBtn" onclick="showPreviousQuestion()">Previous</button>
+                <button id="nextBtn" onclick="showNextQuestion()">Next</button>
+            </div>
+        </div>
+        <div id="summary" class="hidden">
+            <h2>Test Summary</h2>
+            <p>Total Questions: <span id="totalQuestions" class="score-highlight"></span></p>
+            <p>Correct Answers: <span id="correctAnswers" class="score-highlight"></span></p>
+            <p>Score: <span id="score" class="score-highlight"></span>%</p>
+            <div id="wrongAnswers">
+                <h3>Incorrect Answers:</h3>
+                <div id="wrongQuestionsList"></div>
+            </div>
+            <button onclick="restartQuiz()" style="background-color: #28a745; color: white; margin-top: 20px;">
+                Restart Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const part1pageQuestions = [
+    {
+        question: "What is the defining dimensional characteristic of nanoparticles?",
+        options: [
+            "At least one dimension less than 1 µm",
+            "Equal dimensions in all directions",
+            "Greater than 1 µm",
+            "No fixed dimensions"
+        ],
+        answer: "At least one dimension less than 1 µm"
+    },
+    {
+        question: "Which structure is an example of a tube-like nanoparticle?",
+        options: [
+            "Carbon nanotubes",
+            "Ag nanoparticles",
+            "Ni nanowires",
+            "Quantum dots"
+        ],
+        answer: "Carbon nanotubes"
+    },
+    {
+        question: "What property of gold changes significantly at the nanoscale?",
+        options: [
+            "Optical absorption",
+            "Melting point",
+            "Resistivity",
+            "All of the above"
+        ],
+        answer: "All of the above"
+    },
+    {
+        question: "What ratio is significantly higher in nanoparticles compared to bulk materials?",
+        options: [
+            "Surface area-to-volume ratio",
+            "Volume-to-surface area ratio",
+            "Density-to-volume ratio",
+            "Atomic radius-to-density ratio"
+        ],
+        answer: "Surface area-to-volume ratio"
+    },
+    {
+        question: "What is the phenomenon where metal nanoparticles exhibit unique light scattering properties?",
+        options: [
+            "Plasmon resonance",
+            "Quantum tunneling",
+            "Electron delocalization",
+            "Surface diffraction"
+        ],
+        answer: "Plasmon resonance"
+    },
+    {
+        question: "What causes semiconductor nanoparticles to exhibit confined energy states?",
+        options: [
+            "Quantum confinement",
+            "Magnetic effects",
+            "High temperature",
+            "Bulk properties"
+        ],
+        answer: "Quantum confinement"
+    },
+    {
+        question: "What is a key mechanical property of nanoparticles?",
+        options: [
+            "Increased mechanical strength",
+            "Constant mechanical strength",
+            "Decreased flexibility",
+            "No mechanical changes"
+        ],
+        answer: "Increased mechanical strength"
+    },
+    {
+        question: "What is a primary factor affecting the physical properties of nanoparticles?",
+        options: [
+            "Size and shape",
+            "Ambient temperature",
+            "Pressure",
+            "Color"
+        ],
+        answer: "Size and shape"
+    },
+    {
+        question: "Which term describes the relationship between surface area and volume in nanoparticles?",
+        options: [
+            "Surface area-to-volume ratio",
+            "Surface tension",
+            "Volume density",
+            "Atomic distribution ratio"
+        ],
+        answer: "Surface area-to-volume ratio"
+    },
+    {
+        question: "How does the melting point of nanoparticles change compared to bulk materials?",
+        options: [
+            "It is lower",
+            "It is higher",
+            "It remains constant",
+            "It depends on ambient conditions"
+        ],
+        answer: "It is lower"
+    },
+    {
+        question: "What property of nanoparticles is affected by their increasing surface area?",
+        options: [
+            "Chemical reactivity",
+            "Optical properties",
+            "Thermal properties",
+            "All of the above"
+        ],
+        answer: "All of the above"
+    },
+    {
+        question: "What is the impact of size on the phase transition temperatures of nanoparticles?",
+        options: [
+            "Lower phase transition temperatures",
+            "Higher phase transition temperatures",
+            "No impact",
+            "Random variation"
+        ],
+        answer: "Lower phase transition temperatures"
+    },
+    {
+        question: "Which nanoparticle shape contributes to its unique properties?",
+        options: [
+            "Spheres, rods, or platelets",
+            "Only spherical shapes",
+            "Only tubular shapes",
+            "Irregular shapes"
+        ],
+        answer: "Spheres, rods, or platelets"
+    },
+    {
+        question: "Which nanoparticles are known for their unique magnetic properties?",
+        options: [
+            "Magnetic nanoparticles",
+            "Semiconductor nanoparticles",
+            "Dielectric nanoparticles",
+            "Transparent nanoparticles"
+        ],
+        answer: "Magnetic nanoparticles"
+    },
+    {
+        question: "What are metal nanoparticles known for?",
+        options: [
+            "Light scattering properties",
+            "Electrical insulation",
+            "Thermal absorption",
+            "Inert behavior"
+        ],
+        answer: "Light scattering properties"
+    },
+    {
+        question: "What type of crystal structure do most metals have at the nanoscale?",
+        options: [
+            "Face-Centered Cubic (FCC)",
+            "Body-Centered Cubic (BCC)",
+            "Simple Cubic (SC)",
+            "Hexagonal Close Packed (HCP)"
+        ],
+        answer: "Face-Centered Cubic (FCC)"
+    },
+    {
+        question: "What does 'magic number' in nanoparticles refer to?",
+        options: [
+            "Optimum number of atoms for stability",
+            "Atomic number of elements",
+            "Fixed structural configuration",
+            "Electron density"
+        ],
+        answer: "Optimum number of atoms for stability"
+    },
+    {
+        question: "What is the Wulff crystal shape used for?",
+        options: [
+            "Determining crystal shapes at equilibrium",
+            "Measuring particle density",
+            "Analyzing thermal conductivity",
+            "Determining optical properties"
+        ],
+        answer: "Determining crystal shapes at equilibrium"
+    },
+    {
+        question: "What affects the shape of a crystal in thermodynamic equilibrium?",
+        options: [
+            "Surface energy",
+            "Density",
+            "Thermal expansion",
+            "Electrical properties"
+        ],
+        answer: "Surface energy"
+    },
+    {
+        question: "What is the effect of surface roughening on nanoparticles?",
+        options: [
+            "Increased surface mobility",
+            "Reduced thermal stability",
+            "Higher density",
+            "No effect"
+        ],
+        answer: "Increased surface mobility"
+    },
+    {
+        question: "What is the impact of nanoparticle size on mechanical strength?",
+        options: [
+            "Higher strength due to fewer defects",
+            "Lower strength due to surface defects",
+            "No impact",
+            "Random changes"
+        ],
+        answer: "Higher strength due to fewer defects"
+    },
+    {
+        question: "What does Differential Thermal Analysis (DTA) measure?",
+        options: [
+            "Temperature differences during phase transitions",
+            "Density of nanoparticles",
+            "Surface area of materials",
+            "Electrical conductivity"
+        ],
+        answer: "Temperature differences during phase transitions"
+    },
+    {
+        question: "What is the purpose of Thermogravimetric Analysis (TGA)?",
+        options: [
+            "Monitoring mass changes with temperature",
+            "Analyzing optical properties",
+            "Determining electrical resistance",
+            "Studying nanoparticle shapes"
+        ],
+        answer: "Monitoring mass changes with temperature"
+    },
+    {
+        question: "What property makes quantum dots useful in optoelectronics?",
+        options: [
+            "Tunable bandgap",
+            "Fixed optical absorption",
+            "High thermal stability",
+            "Low reactivity"
+        ],
+        answer: "Tunable bandgap"
+    },
+    {
+        question: "How does particle size affect optical absorption in nanoparticles?",
+        options: [
+            "Smaller particles increase absorption",
+            "Larger particles decrease absorption",
+            "No impact",
+            "Absorption depends only on material type"
+        ],
+        answer: "Smaller particles increase absorption"
+    },
+    {
+        question: "What synthesis technique reduces metal salts in solution?",
+        options: [
+            "Colloidal synthesis",
+            "Thermal decomposition",
+            "Microwave synthesis",
+            "Attrition"
+        ],
+        answer: "Colloidal synthesis"
+    },
+    {
+        question: "What is the role of surface functionalization in drug delivery?",
+        options: [
+            "Targeting specific cells",
+            "Reducing cost",
+            "Increasing size",
+            "Maintaining stability"
+        ],
+        answer: "Targeting specific cells"
+    },
+    {
+        question: "What type of spectroscopy analyzes vibrational properties of nanoparticles?",
+        options: [
+            "Raman Spectroscopy",
+            "X-Ray Diffraction",
+            "Thermal Analysis",
+            "UV-Visible Spectroscopy"
+        ],
+        answer: "Raman Spectroscopy"
+    },
+    {
+        question: "What property of nanoparticles allows them to be used in cancer therapy?",
+        options: [
+            "Heat generation through plasmon resonance",
+            "High thermal conductivity",
+            "Low optical absorption",
+            "Uniform particle size"
+        ],
+        answer: "Heat generation through plasmon resonance"
+    }
+];
+const part2pageQuestions = [
+    {
+        question: "What method is commonly used to synthesize nanoparticles by vaporizing and cooling a material?",
+        options: [
+            "Laser ablation",
+            "Colloidal synthesis",
+            "Thermal decomposition",
+            "Pyrolysis"
+        ],
+        answer: "Laser ablation"
+    },
+    {
+        question: "What is a key factor that influences the optical properties of metal nanoparticles?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Magnetic properties",
+            "Phase transitions",
+            "Thermal conductivity"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "How does nanoparticle size affect its surface energy?",
+        options: [
+            "Smaller particles have higher surface energy",
+            "Larger particles have higher surface energy",
+            "No impact of size on surface energy",
+            "Surface energy decreases with decreasing size"
+        ],
+        answer: "Smaller particles have higher surface energy"
+    },
+    {
+        question: "What phenomenon explains the unique electrical conductivity of nanoparticles?",
+        options: [
+            "Quantum confinement",
+            "Thermal expansion",
+            "Magnetic effects",
+            "Optical absorption"
+        ],
+        answer: "Quantum confinement"
+    },
+    {
+        question: "Which type of nanoparticle is known for its applications in biological imaging?",
+        options: [
+            "Quantum dots",
+            "Magnetic nanoparticles",
+            "Metallic nanoparticles",
+            "Polymeric nanoparticles"
+        ],
+        answer: "Quantum dots"
+    },
+    {
+        question: "What is a characteristic application of magnetic nanoparticles?",
+        options: [
+            "Targeted drug delivery",
+            "Optical imaging",
+            "Thermal analysis",
+            "UV-Visible absorption"
+        ],
+        answer: "Targeted drug delivery"
+    },
+    {
+        question: "What is the effect of quantum size confinement on a semiconductor's bandgap?",
+        options: [
+            "It increases the bandgap",
+            "It decreases the bandgap",
+            "It has no effect",
+            "It causes random fluctuations in the bandgap"
+        ],
+        answer: "It increases the bandgap"
+    },
+    {
+        question: "What property of carbon nanotubes makes them ideal for use in sensors?",
+        options: [
+            "High electrical conductivity",
+            "Low thermal expansion",
+            "High reflectivity",
+            "High density"
+        ],
+        answer: "High electrical conductivity"
+    },
+    {
+        question: "What method of nanoparticle synthesis involves the controlled reduction of metal ions?",
+        options: [
+            "Chemical reduction",
+            "Thermal decomposition",
+            "Attrition",
+            "Microwave synthesis"
+        ],
+        answer: "Chemical reduction"
+    },
+    {
+        question: "Which analysis technique is used to study the thermal stability of nanoparticles?",
+        options: [
+            "Thermogravimetric Analysis (TGA)",
+            "UV-Visible Spectroscopy",
+            "X-Ray Diffraction (XRD)",
+            "Raman Spectroscopy"
+        ],
+        answer: "Thermogravimetric Analysis (TGA)"
+    },
+    {
+        question: "What is the significance of the high surface area-to-volume ratio in nanoparticles?",
+        options: [
+            "Increased chemical reactivity",
+            "Decreased stability",
+            "Increased density",
+            "Reduced thermal conductivity"
+        ],
+        answer: "Increased chemical reactivity"
+    },
+    {
+        question: "What optical phenomenon occurs due to the interaction of light with metal nanoparticles?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Photon scattering",
+            "Thermal reflection",
+            "Quantum tunneling"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "What property of nanoparticles is enhanced by their small size?",
+        options: [
+            "Mechanical strength",
+            "Electrical conductivity",
+            "Thermal resistance",
+            "All of the above"
+        ],
+        answer: "All of the above"
+    },
+    {
+        question: "What does Differential Scanning Calorimetry (DSC) measure?",
+        options: [
+            "Heat flow in a material",
+            "Density changes with temperature",
+            "Surface area of nanoparticles",
+            "Optical properties of nanoparticles"
+        ],
+        answer: "Heat flow in a material"
+    },
+    {
+        question: "What method is used to synthesize nanoparticles using lasers in a liquid medium?",
+        options: [
+            "Laser ablation",
+            "Pyrolysis",
+            "Microwave synthesis",
+            "Chemical reduction"
+        ],
+        answer: "Laser ablation"
+    },
+    {
+        question: "Which property makes nanoparticles suitable for use in catalysis?",
+        options: [
+            "High surface area",
+            "Large particle size",
+            "Low surface energy",
+            "High density"
+        ],
+        answer: "High surface area"
+    },
+    {
+        question: "What synthesis method involves the decomposition of precursors at high temperatures?",
+        options: [
+            "Thermal decomposition",
+            "Colloidal synthesis",
+            "Laser ablation",
+            "Attrition"
+        ],
+        answer: "Thermal decomposition"
+    },
+    {
+        question: "What property allows nanoparticles to absorb and scatter light differently than bulk materials?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Magnetic effects",
+            "Thermal conductivity",
+            "Density"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "What is a key feature of nanoparticles used in drug delivery systems?",
+        options: [
+            "Targeting ability through surface functionalization",
+            "Fixed size and shape",
+            "High density",
+            "Low chemical reactivity"
+        ],
+        answer: "Targeting ability through surface functionalization"
+    },
+    {
+        question: "What is the effect of size reduction on the bandgap of semiconductor nanoparticles?",
+        options: [
+            "Bandgap increases",
+            "Bandgap decreases",
+            "Bandgap remains constant",
+            "Bandgap fluctuates randomly"
+        ],
+        answer: "Bandgap increases"
+    },
+    {
+        question: "What technique is used to determine the crystal structure of nanoparticles?",
+        options: [
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Thermal Analysis",
+            "Raman Spectroscopy"
+        ],
+        answer: "X-Ray Diffraction (XRD)"
+    },
+    {
+        question: "What is the main factor contributing to the unique color of metal nanoparticles?",
+        options: [
+            "Plasmon resonance",
+            "Quantum confinement",
+            "Thermal expansion",
+            "Magnetic properties"
+        ],
+        answer: "Plasmon resonance"
+    },
+    {
+        question: "What makes nanoparticles suitable for use in electronics?",
+        options: [
+            "High electrical conductivity",
+            "Low reactivity",
+            "Fixed optical properties",
+            "Large particle size"
+        ],
+        answer: "High electrical conductivity"
+    },
+    {
+        question: "What synthesis technique involves controlled nucleation and growth in a solution?",
+        options: [
+            "Colloidal synthesis",
+            "Laser ablation",
+            "Thermal decomposition",
+            "Attrition"
+        ],
+        answer: "Colloidal synthesis"
+    },
+    {
+        question: "What happens to the optical properties of nanoparticles as their size decreases?",
+        options: [
+            "They exhibit quantum confinement effects",
+            "They remain constant",
+            "They show no significant changes",
+            "They become more like bulk materials"
+        ],
+        answer: "They exhibit quantum confinement effects"
+    }
+];
+const part3pageQuestions = [
+    {
+        question: "What is the main advantage of nanoparticles in catalytic applications?",
+        options: [
+            "Large surface area",
+            "High thermal conductivity",
+            "Low density",
+            "Fixed shape"
+        ],
+        answer: "Large surface area"
+    },
+    {
+        question: "What property of nanoparticles is utilized in the treatment of cancer?",
+        options: [
+            "Heat generation through plasmon resonance",
+            "High density",
+            "Low reactivity",
+            "Fixed optical properties"
+        ],
+        answer: "Heat generation through plasmon resonance"
+    },
+    {
+        question: "What is a key feature of nanoparticles used in biosensors?",
+        options: [
+            "Surface functionalization",
+            "High density",
+            "Low cost",
+            "Uniform particle size"
+        ],
+        answer: "Surface functionalization"
+    },
+    {
+        question: "Which method is used to analyze the thermal stability of nanoparticles?",
+        options: [
+            "Thermogravimetric Analysis (TGA)",
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Raman Spectroscopy"
+        ],
+        answer: "Thermogravimetric Analysis (TGA)"
+    },
+    {
+        question: "What phenomenon makes gold nanoparticles red at the nanoscale?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Quantum tunneling",
+            "Thermal expansion",
+            "Magnetic properties"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "Which synthesis method uses a chemical precursor at high temperatures to form nanoparticles?",
+        options: [
+            "Thermal decomposition",
+            "Colloidal synthesis",
+            "Laser ablation",
+            "Microwave synthesis"
+        ],
+        answer: "Thermal decomposition"
+    },
+    {
+        question: "What is the primary property of quantum dots that makes them useful in optoelectronics?",
+        options: [
+            "Tunable bandgap",
+            "Low cost",
+            "High density",
+            "High reactivity"
+        ],
+        answer: "Tunable bandgap"
+    },
+    {
+        question: "What technique measures the crystal structure of nanoparticles?",
+        options: [
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Raman Spectroscopy",
+            "Thermal Analysis"
+        ],
+        answer: "X-Ray Diffraction (XRD)"
+    },
+    {
+        question: "What property of nanoparticles is enhanced by their high surface area-to-volume ratio?",
+        options: [
+            "Chemical reactivity",
+            "Thermal conductivity",
+            "Electrical resistance",
+            "Optical transparency"
+        ],
+        answer: "Chemical reactivity"
+    },
+    {
+        question: "What type of spectroscopy analyzes vibrational and rotational modes in nanoparticles?",
+        options: [
+            "Raman Spectroscopy",
+            "UV-Visible Spectroscopy",
+            "Thermal Analysis",
+            "X-Ray Diffraction"
+        ],
+        answer: "Raman Spectroscopy"
+    },
+    {
+        question: "What property of nanoparticles is most affected by their small size?",
+        options: [
+            "Optical properties",
+            "Thermal conductivity",
+            "Density",
+            "Fixed shape"
+        ],
+        answer: "Optical properties"
+    },
+    {
+        question: "What synthesis method uses vapor condensation to produce nanoparticles?",
+        options: [
+            "Laser ablation",
+            "Colloidal synthesis",
+            "Thermal decomposition",
+            "Microwave synthesis"
+        ],
+        answer: "Laser ablation"
+    },
+    {
+        question: "What is a key property of nanoparticles that makes them useful in targeted drug delivery?",
+        options: [
+            "Surface functionalization",
+            "Low thermal conductivity",
+            "High density",
+            "Fixed optical properties"
+        ],
+        answer: "Surface functionalization"
+    },
+    {
+        question: "What happens to the melting point of nanoparticles as their size decreases?",
+        options: [
+            "It decreases",
+            "It increases",
+            "It remains constant",
+            "It fluctuates randomly"
+        ],
+        answer: "It decreases"
+    },
+    {
+        question: "What is the effect of size reduction on the optical properties of nanoparticles?",
+        options: [
+            "Exhibits quantum confinement",
+            "Becomes more like bulk materials",
+            "Shows no significant changes",
+            "Fixed optical absorption"
+        ],
+        answer: "Exhibits quantum confinement"
+    },
+    {
+        question: "Which nanoparticles are known for their light scattering properties?",
+        options: [
+            "Metal nanoparticles",
+            "Semiconductor nanoparticles",
+            "Magnetic nanoparticles",
+            "Dielectric nanoparticles"
+        ],
+        answer: "Metal nanoparticles"
+    },
+    {
+        question: "What type of microscopy is often used to study nanoparticle size and morphology?",
+        options: [
+            "Electron microscopy",
+            "Optical microscopy",
+            "Thermal microscopy",
+            "X-ray microscopy"
+        ],
+        answer: "Electron microscopy"
+    },
+    {
+        question: "What synthesis method produces nanoparticles through controlled reduction of metal salts?",
+        options: [
+            "Colloidal synthesis",
+            "Laser ablation",
+            "Thermal decomposition",
+            "Attrition"
+        ],
+        answer: "Colloidal synthesis"
+    },
+    {
+        question: "What happens to the bandgap of semiconductor nanoparticles as their size decreases?",
+        options: [
+            "It increases",
+            "It decreases",
+            "It remains constant",
+            "It fluctuates randomly"
+        ],
+        answer: "It increases"
+    },
+    {
+        question: "What property of nanoparticles allows them to enhance imaging in biomedical applications?",
+        options: [
+            "Fluorescence",
+            "High thermal conductivity",
+            "Magnetic properties",
+            "Fixed bandgap"
+        ],
+        answer: "Fluorescence"
+    },
+    {
+        question: "What is a common application of magnetic nanoparticles?",
+        options: [
+            "Targeted drug delivery",
+            "Optical imaging",
+            "Thermal analysis",
+            "UV-Visible absorption"
+        ],
+        answer: "Targeted drug delivery"
+    },
+    {
+        question: "What is the impact of high surface area on the properties of nanoparticles?",
+        options: [
+            "Increased chemical reactivity",
+            "Lower thermal stability",
+            "Decreased optical absorption",
+            "No effect"
+        ],
+        answer: "Increased chemical reactivity"
+    },
+    {
+        question: "Which property of nanoparticles changes significantly due to surface effects?",
+        options: [
+            "Melting point",
+            "Density",
+            "Optical transparency",
+            "Thermal expansion"
+        ],
+        answer: "Melting point"
+    },
+    {
+        question: "What property of nanoparticles is utilized in catalysis?",
+        options: [
+            "High surface area",
+            "Low density",
+            "Fixed optical properties",
+            "Thermal expansion"
+        ],
+        answer: "High surface area"
+    },
+    {
+        question: "What synthesis method uses a laser beam to generate nanoparticles in a liquid medium?",
+        options: [
+            "Laser ablation",
+            "Thermal decomposition",
+            "Microwave synthesis",
+            "Attrition"
+        ],
+        answer: "Laser ablation"
+    }
+];
+const part4pageQuestions = [
+    {
+        question: "What property of nanoparticles enhances their use in environmental remediation?",
+        options: [
+            "High surface area-to-volume ratio",
+            "Fixed optical properties",
+            "Uniform shape",
+            "Low thermal conductivity"
+        ],
+        answer: "High surface area-to-volume ratio"
+    },
+    {
+        question: "What technique is commonly used to measure the particle size of nanoparticles?",
+        options: [
+            "Dynamic Light Scattering (DLS)",
+            "X-Ray Diffraction (XRD)",
+            "Thermal Gravimetric Analysis (TGA)",
+            "UV-Visible Spectroscopy"
+        ],
+        answer: "Dynamic Light Scattering (DLS)"
+    },
+    {
+        question: "What is the primary mechanism for heat generation in magnetic nanoparticles?",
+        options: [
+            "Magnetic hysteresis losses",
+            "Quantum confinement effects",
+            "Thermal expansion",
+            "Plasmon resonance"
+        ],
+        answer: "Magnetic hysteresis losses"
+    },
+    {
+        question: "How does the electronic bandgap of nanoparticles differ from their bulk counterparts?",
+        options: [
+            "Nanoparticles have a larger bandgap",
+            "Nanoparticles have a smaller bandgap",
+            "Bandgap remains constant",
+            "Bandgap is undefined in nanoparticles"
+        ],
+        answer: "Nanoparticles have a larger bandgap"
+    },
+    {
+        question: "What makes metal nanoparticles suitable for applications in sensors?",
+        options: [
+            "High electrical conductivity",
+            "Low density",
+            "Fixed surface area",
+            "Uniform morphology"
+        ],
+        answer: "High electrical conductivity"
+    },
+    {
+        question: "Which nanoparticles are most commonly used in photovoltaic applications?",
+        options: [
+            "Quantum dots",
+            "Magnetic nanoparticles",
+            "Metallic nanoparticles",
+            "Dielectric nanoparticles"
+        ],
+        answer: "Quantum dots"
+    },
+    {
+        question: "What is the significance of plasmon resonance in metal nanoparticles?",
+        options: [
+            "It governs their optical properties",
+            "It determines their density",
+            "It fixes their size",
+            "It controls their chemical reactivity"
+        ],
+        answer: "It governs their optical properties"
+    },
+    {
+        question: "What factor primarily affects the melting point of nanoparticles?",
+        options: [
+            "Particle size",
+            "Shape",
+            "Chemical composition",
+            "Ambient temperature"
+        ],
+        answer: "Particle size"
+    },
+    {
+        question: "What type of microscopy provides high-resolution imaging of nanoparticles?",
+        options: [
+            "Transmission Electron Microscopy (TEM)",
+            "Optical Microscopy",
+            "Atomic Force Microscopy (AFM)",
+            "Scanning Tunneling Microscopy (STM)"
+        ],
+        answer: "Transmission Electron Microscopy (TEM)"
+    },
+    {
+        question: "What property allows nanoparticles to be effective in catalysis?",
+        options: [
+            "High surface area",
+            "High density",
+            "Fixed thermal conductivity",
+            "Magnetic properties"
+        ],
+        answer: "High surface area"
+    },
+    {
+        question: "What synthesis method involves rapid cooling of vaporized materials?",
+        options: [
+            "Laser ablation",
+            "Colloidal synthesis",
+            "Thermal decomposition",
+            "Pyrolysis"
+        ],
+        answer: "Laser ablation"
+    },
+    {
+        question: "What is the primary use of magnetic nanoparticles in biomedical applications?",
+        options: [
+            "Targeted drug delivery",
+            "Enhancing optical absorption",
+            "Reducing chemical reactivity",
+            "Improving thermal stability"
+        ],
+        answer: "Targeted drug delivery"
+    },
+    {
+        question: "How does nanoparticle size affect its optical properties?",
+        options: [
+            "Smaller nanoparticles exhibit quantum effects",
+            "Larger nanoparticles absorb more light",
+            "Size has no impact",
+            "Optical properties become uniform"
+        ],
+        answer: "Smaller nanoparticles exhibit quantum effects"
+    },
+    {
+        question: "What is a common feature of nanoparticles used in drug delivery systems?",
+        options: [
+            "Surface functionalization",
+            "Fixed size",
+            "High density",
+            "High thermal conductivity"
+        ],
+        answer: "Surface functionalization"
+    },
+    {
+        question: "What happens to the thermal stability of nanoparticles as their size decreases?",
+        options: [
+            "It decreases",
+            "It increases",
+            "It remains constant",
+            "It fluctuates randomly"
+        ],
+        answer: "It decreases"
+    },
+    {
+        question: "What analysis technique measures particle size and distribution in a liquid medium?",
+        options: [
+            "Dynamic Light Scattering (DLS)",
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Raman Spectroscopy"
+        ],
+        answer: "Dynamic Light Scattering (DLS)"
+    },
+    {
+        question: "What is the effect of surface energy on the properties of nanoparticles?",
+        options: [
+            "Increased chemical reactivity",
+            "Reduced optical properties",
+            "Fixed thermal conductivity",
+            "Constant particle size"
+        ],
+        answer: "Increased chemical reactivity"
+    },
+    {
+        question: "What property makes nanoparticles ideal for use in electronics?",
+        options: [
+            "High electrical conductivity",
+            "Low density",
+            "Uniform morphology",
+            "Low thermal stability"
+        ],
+        answer: "High electrical conductivity"
+    },
+    {
+        question: "What is a major application of quantum dots in biomedical research?",
+        options: [
+            "Fluorescent imaging",
+            "Thermal analysis",
+            "Catalysis",
+            "UV absorption"
+        ],
+        answer: "Fluorescent imaging"
+    },
+    {
+        question: "What synthesis method involves the controlled reduction of metal ions in a solution?",
+        options: [
+            "Colloidal synthesis",
+            "Thermal decomposition",
+            "Microwave synthesis",
+            "Laser ablation"
+        ],
+        answer: "Colloidal synthesis"
+    },
+    {
+        question: "What makes nanoparticles suitable for use in environmental sensors?",
+        options: [
+            "High reactivity and sensitivity",
+            "Fixed density",
+            "Low surface area",
+            "Uniform size"
+        ],
+        answer: "High reactivity and sensitivity"
+    },
+    {
+        question: "What optical property of metal nanoparticles is influenced by their size?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Thermal conductivity",
+            "Density",
+            "Magnetic properties"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "What happens to the bandgap of semiconductor nanoparticles as their size decreases?",
+        options: [
+            "It increases",
+            "It decreases",
+            "It remains constant",
+            "It fluctuates randomly"
+        ],
+        answer: "It increases"
+    },
+    {
+        question: "Which nanoparticles are used to improve the efficiency of solar cells?",
+        options: [
+            "Quantum dots",
+            "Magnetic nanoparticles",
+            "Metallic nanoparticles",
+            "Dielectric nanoparticles"
+        ],
+        answer: "Quantum dots"
+    },
+    {
+        question: "What type of microscopy is used to study the morphology of nanoparticles?",
+        options: [
+            "Transmission Electron Microscopy (TEM)",
+            "Optical Microscopy",
+            "X-Ray Microscopy",
+            "Scanning Tunneling Microscopy (STM)"
+        ],
+        answer: "Transmission Electron Microscopy (TEM)"
+    }
+];
+const part5pageQuestions = [
+    {
+        question: "What is a key application of nanoparticles in medical diagnostics?",
+        options: [
+            "Biological imaging",
+            "Thermal insulation",
+            "Optical diffraction",
+            "Electromagnetic shielding"
+        ],
+        answer: "Biological imaging"
+    },
+    {
+        question: "What property of nanoparticles allows them to act as efficient catalysts?",
+        options: [
+            "High surface-to-volume ratio",
+            "Fixed density",
+            "Uniform morphology",
+            "Low surface energy"
+        ],
+        answer: "High surface-to-volume ratio"
+    },
+    {
+        question: "What phenomenon is responsible for the bright fluorescence of quantum dots?",
+        options: [
+            "Quantum confinement",
+            "Thermal expansion",
+            "Surface roughening",
+            "Magnetic hysteresis"
+        ],
+        answer: "Quantum confinement"
+    },
+    {
+        question: "What is the primary use of gold nanoparticles in cancer therapy?",
+        options: [
+            "Heat generation via plasmon resonance",
+            "Electromagnetic shielding",
+            "Thermal conductivity enhancement",
+            "Magnetic imaging"
+        ],
+        answer: "Heat generation via plasmon resonance"
+    },
+    {
+        question: "Which analysis technique is used to monitor the stability of nanoparticles over time?",
+        options: [
+            "Dynamic Light Scattering (DLS)",
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Thermal Gravimetric Analysis (TGA)"
+        ],
+        answer: "Dynamic Light Scattering (DLS)"
+    },
+    {
+        question: "What property of nanoparticles is most critical for their optical applications?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Thermal conductivity",
+            "Magnetic properties",
+            "Density"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "What makes magnetic nanoparticles suitable for hyperthermia treatment?",
+        options: [
+            "Heat generation through magnetic hysteresis",
+            "Low optical absorption",
+            "High thermal conductivity",
+            "Uniform particle size"
+        ],
+        answer: "Heat generation through magnetic hysteresis"
+    },
+    {
+        question: "Which property of nanoparticles is most affected by quantum size effects?",
+        options: [
+            "Electronic bandgap",
+            "Thermal stability",
+            "Density",
+            "Magnetic properties"
+        ],
+        answer: "Electronic bandgap"
+    },
+    {
+        question: "What synthesis method involves the nucleation and growth of particles in a liquid?",
+        options: [
+            "Colloidal synthesis",
+            "Laser ablation",
+            "Thermal decomposition",
+            "Attrition"
+        ],
+        answer: "Colloidal synthesis"
+    },
+    {
+        question: "What is a primary advantage of nanoparticles in targeted drug delivery?",
+        options: [
+            "Specific targeting through surface modification",
+            "High thermal conductivity",
+            "Uniform optical properties",
+            "Fixed density"
+        ],
+        answer: "Specific targeting through surface modification"
+    },
+    {
+        question: "What type of spectroscopy measures the vibrational modes of nanoparticles?",
+        options: [
+            "Raman Spectroscopy",
+            "UV-Visible Spectroscopy",
+            "Dynamic Light Scattering",
+            "X-Ray Diffraction"
+        ],
+        answer: "Raman Spectroscopy"
+    },
+    {
+        question: "What happens to the melting point of nanoparticles as their size decreases?",
+        options: [
+            "It decreases",
+            "It increases",
+            "It remains constant",
+            "It fluctuates randomly"
+        ],
+        answer: "It decreases"
+    },
+    {
+        question: "What makes quantum dots valuable for biological tagging?",
+        options: [
+            "Bright fluorescence and tunable emission",
+            "Low thermal conductivity",
+            "Fixed size and shape",
+            "Uniform particle distribution"
+        ],
+        answer: "Bright fluorescence and tunable emission"
+    },
+    {
+        question: "What is a major factor influencing the catalytic efficiency of nanoparticles?",
+        options: [
+            "High surface energy",
+            "Fixed density",
+            "Low reactivity",
+            "Uniform morphology"
+        ],
+        answer: "High surface energy"
+    },
+    {
+        question: "What is the primary feature of nanoparticles that affects their optical behavior?",
+        options: [
+            "Size-dependent properties",
+            "Thermal stability",
+            "Fixed density",
+            "Uniform shape"
+        ],
+        answer: "Size-dependent properties"
+    },
+    {
+        question: "Which nanoparticles are often used in MRI contrast agents?",
+        options: [
+            "Magnetic nanoparticles",
+            "Quantum dots",
+            "Metallic nanoparticles",
+            "Dielectric nanoparticles"
+        ],
+        answer: "Magnetic nanoparticles"
+    },
+    {
+        question: "What is the main factor that determines the color of gold nanoparticles?",
+        options: [
+            "Surface Plasmon Resonance",
+            "Thermal expansion",
+            "Fixed density",
+            "Shape uniformity"
+        ],
+        answer: "Surface Plasmon Resonance"
+    },
+    {
+        question: "Which nanoparticles are commonly used in solar cells for enhanced efficiency?",
+        options: [
+            "Quantum dots",
+            "Metallic nanoparticles",
+            "Magnetic nanoparticles",
+            "Polymeric nanoparticles"
+        ],
+        answer: "Quantum dots"
+    },
+    {
+        question: "What analysis technique is used to study the crystal structure of nanoparticles?",
+        options: [
+            "X-Ray Diffraction (XRD)",
+            "UV-Visible Spectroscopy",
+            "Dynamic Light Scattering (DLS)",
+            "Raman Spectroscopy"
+        ],
+        answer: "X-Ray Diffraction (XRD)"
+    },
+    {
+        question: "What property of nanoparticles allows them to be effective in water purification?",
+        options: [
+            "High surface area and reactivity",
+            "Uniform density",
+            "High thermal conductivity",
+            "Fixed morphology"
+        ],
+        answer: "High surface area and reactivity"
+    },
+    {
+        question: "What is the primary mechanism for optical absorption in nanoparticles?",
+        options: [
+            "Plasmon resonance",
+            "Thermal expansion",
+            "Magnetic hysteresis",
+            "Density effects"
+        ],
+        answer: "Plasmon resonance"
+    },
+    {
+        question: "What is a key property of nanoparticles that makes them effective for biosensors?",
+        options: [
+            "Surface functionalization",
+            "Fixed optical properties",
+            "High density",
+            "Low thermal stability"
+        ],
+        answer: "Surface functionalization"
+    },
+    {
+        question: "What synthesis technique uses lasers to produce nanoparticles in a liquid medium?",
+        options: [
+            "Laser ablation",
+            "Thermal decomposition",
+            "Microwave synthesis",
+            "Colloidal synthesis"
+        ],
+        answer: "Laser ablation"
+    },
+    {
+        question: "What property of nanoparticles allows their use in catalytic converters?",
+        options: [
+            "High surface-to-volume ratio",
+            "Uniform density",
+            "High thermal conductivity",
+            "Low optical absorption"
+        ],
+        answer: "High surface-to-volume ratio"
+    }
+];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let currentQuestions = [];
+
+        // Add navigation for different tests
+        const quizContainer = document.querySelector('.container');
+        const testSelection = document.createElement('div');
+        testSelection.innerHTML = `
+            <div id="testSelection" style="text-align: center; margin-bottom: 30px;">
+                <h2>Select Test</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="startTest('part1')" class="test-btn">Test 1</button>
+                    <button onclick="startTest('part2')" class="test-btn">Test 2</button>
+                    <button onclick="startTest('part3')" class="test-btn">Test 3</button>
+                    <button onclick="startTest('part4')" class="test-btn">Test 4</button>
+                    <button onclick="startTest('part5')" class="test-btn">Test 5</button>
+                </div>
+            </div>
+        `;
+        quizContainer.insertBefore(testSelection, quizContainer.firstChild);
+
+        // Add styles for test selection buttons
+        const style = document.createElement('style');
+        style.textContent = `
+            .test-btn {
+                background-color: #007bff;
+                color: white;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1em;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+            .test-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
+            #quiz, #summary {
+                display: none;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Modify your existing variables and add test selection logic
+        currentQuestion = 0;
+        userAnswers = [];
+        currentQuestions = [];
+
+        function startTest(part) {
+            // Hide test selection and show quiz
+            document.getElementById('testSelection').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            
+            // Set questions based on selected part
+            switch(part) {
+                case 'part1':
+                    currentQuestions = part1pageQuestions;
+                    break;
+                case 'part2':
+                    currentQuestions = part2pageQuestions;
+                    break;
+                case 'part3':
+                    currentQuestions = part3pageQuestions;
+                    break;
+                case 'part4':
+                    currentQuestions = part4pageQuestions;
+                    break;
+                case 'part5':
+                    currentQuestions = part5pageQuestions;
+                    break;
+            }
+            
+            // Reset quiz state
+            currentQuestion = 0;
+            userAnswers = [];
+            showQuestion(0);
+        }
+
+        // Modify your existing showQuestion function
+        function showQuestion(index) {
+            if (index < 0 || index >= currentQuestions.length) return;
+
+            const question = currentQuestions[index];
+            document.getElementById('questionNumber').textContent = `Question ${index + 1}:`;
+            document.getElementById('question').textContent = question.question;
+            
+            // Update progress bar and counter
+            const progress = ((index + 1) / currentQuestions.length) * 100;
+            document.querySelector('.progress-bar').style.setProperty('--progress', `${progress}%`);
+            document.getElementById('questionCounter').textContent = 
+                `Question ${index + 1} of ${currentQuestions.length}`;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            // Create array of options and shuffle them
+            let shuffledOptions = [...question.options];
+            for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+            }
+            
+            shuffledOptions.forEach((option, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = option;
+                div.onclick = () => selectOption(option, div);
+                optionsContainer.appendChild(div);
+
+                // Show previous selection if exists
+                if (userAnswers[index] === option) {
+                    div.classList.add(option === question.answer ? 'correct' : 'wrong');
+                }
+            });
+
+            updateNavigationButtons();
+        }
+
+        // Modify your selectOption function
+        function selectOption(option, element) {
+            if (userAnswers[currentQuestion]) return; // Prevent changing answer
+
+            userAnswers[currentQuestion] = option;
+            const correctAnswer = currentQuestions[currentQuestion].answer;
+
+            document.querySelectorAll('.option').forEach(opt => {
+                if (opt === element) {
+                    opt.classList.add(option === correctAnswer ? 'correct' : 'wrong');
+                }
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+        }
+
+        function showNextQuestion() {
+            if (currentQuestion < currentQuestions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else if (userAnswers.length > 0) {
+                showSummary();
+            }
+        }
+
+        function showPreviousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentQuestion === currentQuestions.length - 1 ? 'Finish' : 'Next';
+        }
+
+        // Modify your showSummary function
+        function showSummary() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('summary').style.display = 'block';
+
+            const correctCount = userAnswers.filter((answer, index) => 
+                answer === currentQuestions[index].answer
+            ).length;
+
+            document.getElementById('totalQuestions').textContent = currentQuestions.length;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('score').textContent = 
+                ((correctCount / currentQuestions.length) * 100).toFixed(2);
+            
+            // Show wrong answers
+            const wrongQuestionsList = document.getElementById('wrongQuestionsList');
+            wrongQuestionsList.innerHTML = '';
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer !== currentQuestions[index].answer) {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.innerHTML = `
+                        <p><strong>Question:</strong> ${currentQuestions[index].question}</p>
+                        <p><span class="wrong-answer">Your answer: ${answer}</span></p>
+                        <p><span class="correct-answer">Correct answer: ${currentQuestions[index].answer}</span></p>
+                    `;
+                    wrongQuestionsList.appendChild(questionDiv);
+                }
+            });
+        }
+
+        // Modify your restartQuiz function
+        function restartQuiz() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('testSelection').style.display = 'block';
+            currentQuestion = 0;
+            userAnswers = [];
+            // Reset progress bar
+            document.querySelector('.progress-bar').style.setProperty('--progress', '0%');
+            document.getElementById('questionCounter').textContent = '';
+        }
+
+        // Start the quiz when the page loads
+        window.onload = () => {
+            showQuestion(currentQuestion);
+        };
+
+        // Add this right after your container div in the HTML body
+        const homeButton = document.createElement('button');
+        homeButton.className = 'home-button';
+        homeButton.textContent = 'Home';
+        homeButton.onclick = restartQuiz;
+        document.body.appendChild(homeButton);
+    </script>
+</body>
+</html> 
